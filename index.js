@@ -2,7 +2,7 @@
 
 const program = require( 'commander');
 const watch = require( 'node-watch');
-const pirepLoader = require( 'pirogram-package-loader');
+const pirepLoader = require( 'prep-loader');
 const { spawn } = require('child_process');
 const path = require('path');
 
