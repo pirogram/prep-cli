@@ -7,11 +7,12 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 program
-    .version('0.1.0')
+    .version('0.1.1')
     .option('-i, --ssh-identity [path]', 'ssh identity file path.')
     .option('-s, --src [path]', 'source directory for pirogram package [current directory].', '.')
     .option('-d, --dst [path]', 'destination directory for pirogram package.')
     .option('-a, --author [author]', 'pirogram username for author.')
+    .option('-w, --watch', 'watch package directory for changes.')
     .parse(process.argv)
 
 if( !program.sshIdentity || !program.author || !program.dst) {
@@ -20,9 +21,7 @@ if( !program.sshIdentity || !program.author || !program.dst) {
 
 const packageDirectory = path.resolve( program.src);
 
-watch( packageDirectory, {recursive: true}, async (evt, path) => {
-    console.log(`${path} changed.`);
-
+async function syncUp() {
     let p;
     try {
         p = await pirepLoader.loadPackage( program.author, packageDirectory);
@@ -38,6 +37,20 @@ watch( packageDirectory, {recursive: true}, async (evt, path) => {
 
     rsync.stdout.on( 'data', (data) => { process.stdout.write( data.toString()); });
     rsync.stderr.on( 'data', (data) => { process.stderr.write( data.toString()); });
-});
 
-console.log(`Watching dirctory [${packageDirectory}] for changes.`);
+    await new Promise( (resolve, reject) => {
+        rsync.on('error', () => { resolve(); });
+        rsync.on('exit', () => { resolve(); });
+    });
+}
+
+syncUp();
+
+if( program.watch) {
+    watch( packageDirectory, {recursive: true}, async (evt, path) => {
+        console.log(`${path} changed.`);
+        await syncUp();
+    });
+
+    console.log(`Watching dirctory [${packageDirectory}] for changes.`);
+}
