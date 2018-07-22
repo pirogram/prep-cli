@@ -32,7 +32,7 @@ async function syncUp() {
 
     console.log("Syncing content.");
 
-    const rsync = spawn( "rsync", ["-avzh", "-e", `ssh -i ${program.sshIdentity}`, `${packageDirectory}/`,
+    const rsync = spawn( "rsync", ["-avzh", "--delete", "-e", `ssh -i ${program.sshIdentity}`, `${packageDirectory}/`,
         `${program.dst}/${program.author}/${p.meta.code}/`]);
 
     rsync.stdout.on( 'data', (data) => { process.stdout.write( data.toString()); });
