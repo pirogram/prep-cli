@@ -11,11 +11,10 @@ program
     .option('-i, --ssh-identity [path]', 'ssh identity file path.')
     .option('-s, --src [path]', 'source directory for pirogram package [current directory].', '.')
     .option('-d, --dst [path]', 'destination directory for pirogram package.')
-    .option('-a, --author [author]', 'pirogram username for author.')
     .option('-w, --watch', 'watch package directory for changes.')
     .parse(process.argv)
 
-if( !program.sshIdentity || !program.author || !program.dst) {
+if( !program.sshIdentity || !program.dst) {
     program.help();
 }
 
@@ -24,7 +23,7 @@ const packageDirectory = path.resolve( program.src);
 async function syncUp() {
     let p;
     try {
-        p = await pirepLoader.loadPackage( program.author, packageDirectory);
+        p = await pirepLoader.loadPackage( packageDirectory);
     } catch( e) {
         console.log(e);
         return;
@@ -33,7 +32,7 @@ async function syncUp() {
     console.log("Syncing content.");
 
     const rsync = spawn( "rsync", ["-avzh", "--delete", "-e", `ssh -i ${program.sshIdentity}`, `${packageDirectory}/`,
-        `${program.dst}/${program.author}/${p.meta.code}/`]);
+        `${program.dst}/${p.meta.code}/`]);
 
     rsync.stdout.on( 'data', (data) => { process.stdout.write( data.toString()); });
     rsync.stderr.on( 'data', (data) => { process.stderr.write( data.toString()); });
