@@ -7,7 +7,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 program
-    .version('0.1.1')
+    .version('0.1.4')
     .option('-i, --ssh-identity [path]', 'ssh identity file path.')
     .option('-s, --src [path]', 'source directory for pirogram package [current directory].', '.')
     .option('-d, --dst [path]', 'destination directory for pirogram package.')
