@@ -1,6 +1,6 @@
 {
     "name": "prep-cli",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "description": "Command line tool to sync content from local copy to pirogram server.",
     "license": "ISC",
     "main": "index.js",
@@ -13,6 +13,6 @@
         "glob": "^7.1.2",
         "highlight.js": "^9.12.0",
         "node-watch": "^0.5.8",
-        "prep-loader": "^0.1.7"
+        "prep-loader": "^0.1.9"
     }
 }
